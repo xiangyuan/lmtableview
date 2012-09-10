@@ -31,7 +31,8 @@
         pullArrow = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"arrow.png"]];
         [self addSubview:pullArrow];
         [pullArrow release];
-        indicatorView = [[UIActivityIndicatorView alloc] initWithFrame:CGRectZero];
+        indicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        indicatorView.frame = CGRectZero;
         indicatorView.hidden = YES;
         [self addSubview:indicatorView];
         [indicatorView release];

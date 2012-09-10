@@ -27,12 +27,17 @@
     [super viewDidLoad];
     datasource = [[NSMutableArray alloc] init];
 	// Do any additional setup after loading the view, typically from a nib.
-    mTableView = [[UITableView alloc]initWithFrame:CGRectMake(0.f, 0.f, 320.f, 480.f) style:UITableViewStylePlain];
+    mTableView = [[UITableView alloc]initWithFrame:CGRectMake(0.f, 0.f, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height) style:UITableViewStylePlain];
     mTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    mTableView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     mTableView.delegate = self;
     mTableView.dataSource = self;
     [self.view addSubview:mTableView];
     lmHeader = [[LMHeader alloc] initWithFrame:CGRectMake(0, -LMHEADER_HEIGHT, 320.f, LMHEADER_HEIGHT)];
+    lmHeader.headerSate = LMHeaderStateNormal;
+    [lmHeader.indicatorView setHidden:YES];
+    [lmHeader.indicatorView stopAnimating];
+    //mTableView.scrollEnabled = YES;
     lmHeader.backgroundColor = [UIColor clearColor];
     [mTableView addSubview:lmHeader];
     [lmHeader release];
@@ -70,6 +75,7 @@
     
     return cell;
 }
+
 #pragma delegate of the scroll view
 -(void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
     if (lmHeader.headerSate == LMHeaderStateLoading) {//正在加载中
@@ -101,17 +107,17 @@
 }
 
 -(void) arrowAnimation:(UIScrollView *) scrollView {
-    [UIView animateWithDuration:0.2 animations:^{
-        //
-        if (scrollView.contentOffset.y < -LMHEADER_HEIGHT) {
-            lmHeader.messageToShow.text = @"下拉刷新";
-            [lmHeader.pullArrow layer].transform = CATransform3DMakeRotation(M_PI, 0, 0, 1);
-        }else {
-            lmHeader.headerSate = LMHeaderStateLoading;
+    if (scrollView.contentOffset.y < -LMHEADER_HEIGHT) {
+        [UIView animateWithDuration:.3 animations:^{
             lmHeader.messageToShow.text = @"松开刷新";
+            [lmHeader.pullArrow layer].transform = CATransform3DMakeRotation(M_PI, 0, 0, 1);
+        }];
+    } else {
+        [UIView animateWithDuration:.3 animations:^{
+            lmHeader.messageToShow.text = @"下拉刷新";
             [lmHeader.pullArrow layer].transform = CATransform3DMakeRotation(M_PI * 2, 0.f, 0.f, 1.f);
-        }
-    }];
+        }];
+    }
 }
 
 
@@ -129,14 +135,14 @@
 -(void) loadingOver {
     lmHeader.headerSate = LMHeaderStateNormal;
     [UIView animateWithDuration:0.3 animations:^{
-    mTableView.contentInset = UIEdgeInsetsZero;
-    [lmHeader.pullArrow layer].transform = CATransform3DMakeRotation(M_PI * 2, 0, 0, 1);
+        mTableView.contentInset = UIEdgeInsetsZero;
+        [lmHeader.pullArrow layer].transform = CATransform3DMakeRotation(M_PI * 2, 0, 0, 1);
     }
      completion:^(BOOL finished) {
          [lmHeader.indicatorView stopAnimating];
          lmHeader.messageToShow.text = @"下拉刷新";
          lmHeader.pullArrow.hidden = NO;
-         lmHeader.indicatorView.hidden = NO;
+         lmHeader.indicatorView.hidden = YES;
 //         [self performSelector:@selector(stopLoadingComplete)];
      }];
 }
