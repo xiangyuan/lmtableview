@@ -90,7 +90,7 @@
     if (lmHeader.headerSate == LMHeaderStateLoading) {
         if (scrollView.contentOffset.y > 0) {
             mTableView.contentInset = UIEdgeInsetsZero;
-        } else if (scrollView.contentOffset.y <= -LMHEADER_HEIGHT) {
+        } else if (scrollView.contentOffset.y >= -LMHEADER_HEIGHT) {
             mTableView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
         }
     } else if (lmHeader.headerSate == LMHeaderStatePull && scrollView.contentOffset.y < 0) {
@@ -99,12 +99,16 @@
 }
 
 -(void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    if (lmHeader.headerSate == LMHeaderStateLoading)
+    if (lmHeader.headerSate == LMHeaderStateLoading) 
         return;
     if (scrollView.contentOffset.y <= -LMHEADER_HEIGHT) {
         [self performSelector:@selector(startLoadingAnimation)];
     }
 }
+
+//-(void) scrollToLocation {
+//    mTableView.contentInset = UIEdgeInsetsMake(LMHEADER_HEIGHT, 0, 0, 0);
+//}
 
 -(void) arrowAnimation:(UIScrollView *) scrollView {
     if (scrollView.contentOffset.y < -LMHEADER_HEIGHT) {
@@ -125,6 +129,8 @@
 -(void) startLoadingAnimation {
     [UIView animateWithDuration:0.3 animations:^{
         lmHeader.headerSate = LMHeaderStateLoading;
+        mTableView.contentInset = UIEdgeInsetsMake(LMHEADER_HEIGHT, 0.f, 0.f, 0.f);
+        lmHeader.messageToShow.text = @"刷新中...";
         lmHeader.pullArrow.hidden = YES;
         lmHeader.indicatorView.hidden = NO;
         [lmHeader.indicatorView startAnimating];
