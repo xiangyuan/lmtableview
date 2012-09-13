@@ -7,7 +7,23 @@
 //
 
 #import <UIKit/UIKit.h>
+/*
+@protocol LMFooterDelegate <NSObject>
+
+@optional
+-(void)lmFooterBeginDragging:(UIScrollView *) scrollView;
+-(void)lmFooterDidScroll:(UIScrollView*)scrollView;
+-(void)lmfooterEndDragging:(UIScrollView*)scrollView;
+
+@end
+*/
 
 @interface LMFooter : UIView
+
+@property (nonatomic,retain) UIActivityIndicatorView *indicator;
+
+@property (nonatomic,retain) UILabel *freshMsgLbl;
+
+//@property(nonatomic,assign) id<LMFooterDelegate> footerDelegate;
 
 @end
