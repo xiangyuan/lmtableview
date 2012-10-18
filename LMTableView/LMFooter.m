@@ -85,7 +85,7 @@ typedef enum FootState LMFootState;
         if ([delegate respondsToSelector:@selector(lmStartLoadingData:)]) {
             self.frame = CGRectMake(0.f, scroollView.contentSize.height, 320.f, LMFOOTER_HEIGHT);
             [self changeShowOfFooter:FOOTSHOWSTATE];
-            scroollView.contentInset = UIEdgeInsetsMake(0.f, 0.f, 75.f, 0.f);
+            scroollView.contentInset = UIEdgeInsetsMake(0.f, 0.f, 85.f, 0.f);
             [delegate lmStartLoadingData:self];
         }
     }
