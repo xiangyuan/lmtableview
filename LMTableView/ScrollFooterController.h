@@ -10,7 +10,7 @@
 #import "LMFooter.h"
 
 
-@interface ScrollFooterController : UIViewController<UITableViewDataSource,UITableViewDelegate>
+@interface ScrollFooterController : UIViewController<UITableViewDataSource,UITableViewDelegate,LMFooterDelegate>
 
 
 @end

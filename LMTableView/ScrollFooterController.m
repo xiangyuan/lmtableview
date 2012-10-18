@@ -15,6 +15,7 @@
     LMFooter * footer;
     UITableView * mTable;
     NSMutableArray * datasource;
+    BOOL isLoading;
 }
 @end
 
@@ -26,6 +27,7 @@
     if (self) {
         // Custom initialization
         datasource = [[NSMutableArray alloc]init];
+        isLoading = FALSE;
     }
     return self;
 }
@@ -41,8 +43,9 @@
     mTable.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
     mTable.dataSource = self;
     mTable.delegate = self;
-    footer = [[LMFooter alloc]initWithFrame:CGRectMake(0.f, mTable.contentSize.height, 320.f, LMFOOTER_HEIGHT)];
+    footer = [[LMFooter alloc]initWithFrame:CGRectMake(0.f, mTable.bounds.size.height, 320.f, LMFOOTER_HEIGHT)];
     footer.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
+    footer.delegate = self;
     [mTable addSubview:footer];
     [footer release];
     [self.view addSubview:mTable];
@@ -73,34 +76,27 @@
 }
 #pragma scroll
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if (scrollView.contentOffset.y + scrollView.frame.size.height >= scrollView.contentSize.height) {
-        [self loadMore];
+    if (isLoading) {
+        return;
     }
+    [footer lmFreshViewDidScroll:scrollView];
 }
 
--(void)loadMore {
+#pragma mark 
+-(void)lmStartLoadingData:(LMFooter *)lmFootView {
     //网络请求
-    [self performSelectorOnMainThread:@selector(UpdaetUI) withObject:nil waitUntilDone:NO];
+    isLoading = TRUE;
+    [self performSelector:@selector(updateUI) withObject:nil afterDelay:3];//3 seconds over
 }
 
--(void)UpdaetUI {
-    [UIView animateWithDuration:0.3 animations:^{
-        footer.freshMsgLbl.text = @"正在刷新中...";
-        footer.indicator.hidden = NO;
-        footer.frame = CGRectMake(0.f, mTable.contentSize.height, 320.f, LMFOOTER_HEIGHT);
-        mTable.contentInset = UIEdgeInsetsMake(0.f, 0.f, FOOT_CONTENTINSETS, 0.f);
-        [footer.indicator startAnimating];
-    }];
-    [self performSelector:@selector(stopAnimation) withObject:nil afterDelay:3];
+-(void) lmLoadFinished:(LMFooter *)scrollView {
+    NSLog(@"reload data");
+    // update table
 }
 
--(void)stopAnimation {
-    [UIView animateWithDuration:.3 animations:^{
-        footer.freshMsgLbl.text = @"";
-        [footer.indicator stopAnimating];
-        footer.indicator.hidden = YES;
-        mTable.contentInset = UIEdgeInsetsZero;
-    }];
+-(void) updateUI {
+    isLoading = FALSE;
+    [footer lmFreshFinished:mTable];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
