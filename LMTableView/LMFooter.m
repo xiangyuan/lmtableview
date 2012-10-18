@@ -102,8 +102,8 @@ typedef enum FootState LMFootState;
 
 -(void)lmFreshFinished:(UIScrollView *)scrollView {
     if ([delegate respondsToSelector:@selector(lmLoadFinished:)]) {
-        scrollView.contentInset = UIEdgeInsetsZero;
         [self changeShowOfFooter:FOOTHIDSTATE];
+        scrollView.contentInset = UIEdgeInsetsZero;
         [delegate lmLoadFinished:self];
     }
 }
