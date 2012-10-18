@@ -83,9 +83,9 @@ typedef enum FootState LMFootState;
 -(void)lmFreshViewDidScroll:(UIScrollView *)scroollView {
     if (scroollView.contentOffset.y + scroollView.frame.size.height >= scroollView.contentSize.height + FIXEDGE) {
         if ([delegate respondsToSelector:@selector(lmStartLoadingData:)]) {
-            self.frame = CGRectMake(0.f, scroollView.contentSize.height, 320.f, LMFOOTER_HEIGHT);
+            scroollView.contentInset = UIEdgeInsetsMake(0.f, 0.f, 85.f, 0.f);
+            self.frame = CGRectMake(0.f, scroollView.contentSize.height, 320.f, LMFOOTER_HEIGHT);            
             [self changeShowOfFooter:FOOTSHOWSTATE];
-            scroollView.contentInset = UIEdgeInsetsMake(0.f, 0.f, 75.f, 0.f);
             [delegate lmStartLoadingData:self];
         }
     }
@@ -96,13 +96,14 @@ typedef enum FootState LMFootState;
  scroll end dragging
  */
 -(void)lmFreshEndDragging:(UIScrollView *)scrollView {
+    [self lmFreshViewDidScroll:scrollView];
 }
 
 
 -(void)lmFreshFinished:(UIScrollView *)scrollView {
     if ([delegate respondsToSelector:@selector(lmLoadFinished:)]) {
-        [self changeShowOfFooter:FOOTHIDSTATE];
         scrollView.contentInset = UIEdgeInsetsZero;
+        [self changeShowOfFooter:FOOTHIDSTATE];
         [delegate lmLoadFinished:self];
     }
 }
